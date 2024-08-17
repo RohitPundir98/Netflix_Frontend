@@ -5,43 +5,43 @@ import { RiThumbUpFill, RiThumbDownFill } from "react-icons/ri";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiChevronDown } from "react-icons/bi";
 import { BsCheck } from "react-icons/bs";
-import LoadingSpinner from "../components/LoadingSpinner"; // Import LoadingSpinner
+import LoadingSpinner from "../components/LoadingSpinner"; // Handles loading state
 
 export default React.memo(function Card({ index, movieData, isLiked = false }) {
-  const navigate = useNavigate();
-  const [isHovered, setIsHovered] = useState(false);
-  const [rating, setRating] = useState(6.7);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // Navigation hook for routing
+  const [isHovered, setIsHovered] = useState(false); // To handle hover state
+  const [rating, setRating] = useState(6.7); // Default rating value
+  const [loading, setLoading] = useState(true); // Loading state for the spinner
 
   useEffect(() => {
     const fetchRating = async () => {
       try {
-        setLoading(true);
+        setLoading(true); // Show spinner while fetching data
         const ratingResponse = await fetch(
           `https://api.themoviedb.org/3/movie/${movieData.id}?api_key=${Your_API_KEY}`
         );
         if (ratingResponse.ok) {
-          const ratingData = await ratingResponse.json();
-          const roundedRating = ratingData.vote_average.toFixed(1);
-          setRating(roundedRating);
+          const ratingData = await ratingResponse.json(); // Parsing response
+          const roundedRating = ratingData.vote_average.toFixed(1); // Format rating
+          setRating(roundedRating); // Update rating state
         } else {
-          setRating("N/A");
+          setRating("N/A"); // Handle no rating available
         }
       } catch (error) {
-        console.log(error);
-        setRating("N/A");
+        console.log(error); // Log error for debugging
+        setRating("N/A"); // Fallback if error occurs
       } finally {
-        setLoading(false);
+        setLoading(false); // Hide spinner when done
       }
     };
 
-    fetchRating();
-  }, [movieData.id]);
+    fetchRating(); // Trigger the fetch when component mounts
+  }, [movieData.id]); // Dependency on movie ID
 
   return (
     <Container
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => setIsHovered(true)} // Show details on hover
+      onMouseLeave={() => setIsHovered(false)} // Hide details on leave
     >
       <img
         src={`https://image.tmdb.org/t/p/w500${movieData.image}`}
@@ -57,37 +57,37 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
             />
             {loading ? (
               <div className="loading-container">
-                <LoadingSpinner />
+                <LoadingSpinner /> {/* Display spinner during loading */}
               </div>
             ) : null}
           </div>
           <div className="info-container flex column">
             <h3
               className="name"
-              onClick={() => navigate(`/details/${movieData.id}`)}
+              onClick={() => navigate(`/details/${movieData.id}`)} // Navigate to details
             >
               {movieData.name}
             </h3>
             <div className="icons flex j-between">
               <div className="controls flex">
-                <RiThumbUpFill title="Like" />
-                <RiThumbDownFill title="Dislike" />
-                <div className="rating-circle">{rating}</div>
+                <RiThumbUpFill title="Like" /> {/* Like button */}
+                <RiThumbDownFill title="Dislike" /> {/* Dislike button */}
+                <div className="rating-circle">{rating}</div> {/* Rating display */}
                 {isLiked ? (
                   <BsCheck title="Added to List" style={{ color: "#00ff00" }} />
                 ) : (
-                  <AiOutlinePlus title="Add to my list" />
+                  <AiOutlinePlus title="Add to my list" /> {/* Add to list button */}
                 )}
               </div>
 
               <div className="info">
-                <BiChevronDown title="More Info" />
+                <BiChevronDown title="More Info" /> {/* More info button */}
               </div>
             </div>
             <div className="genres flex">
               <ul className="flex">
                 {movieData.genres.map((genre, index) => (
-                  <li key={index}>{genre}</li>
+                  <li key={index}>{genre}</li> // Display genres
                 ))}
               </ul>
             </div>
@@ -131,7 +131,7 @@ const Container = styled.div`
         object-fit: cover;
         border-radius: 0.3rem;
         top: 0;
-        padding:8px;
+        padding: 8px;
         z-index: 4;
         position: absolute;
       }
