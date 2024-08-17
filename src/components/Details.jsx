@@ -6,11 +6,11 @@ import NoImage from "../assets/Noimage.png";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function Details() {
-  const { id } = useParams(); // Get the movie/TV show ID from the URL parameters
-  const [details, setDetails] = useState(null); // State to hold movie/TV show details
-  const [crew, setCrew] = useState([]); // State to hold crew details
-  const [trailer, setTrailer] = useState(null); // State to hold trailer data
-  const [isLoading, setIsLoading] = useState(true); // State to handle loading state
+  const { id } = useParams(); // Get the movie/show ID from URL
+  const [details, setDetails] = useState(null); // Holds movie/show details
+  const [crew, setCrew] = useState([]); // Holds crew members
+  const [trailer, setTrailer] = useState(null); // Holds trailer info
+  const [isLoading, setIsLoading] = useState(true); // Loading state for spinner
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -19,27 +19,27 @@ export default function Details() {
           `https://api.themoviedb.org/3/movie/${id}?api_key=${Your_API_KEY}&append_to_response=credits,videos`
         );
         const data = await response.json();
-        setDetails(data);
-        setCrew(data.credits.crew.slice(0, 6)); // Limiting crew to the top 6
+        setDetails(data); // Store movie/show details
+        setCrew(data.credits.crew.slice(0, 6)); // Limit to top 6 crew members
         setTrailer(
           data.videos.results.find((video) => video.type === "Trailer")
-        ); // Find the trailer video
-        setIsLoading(false);
+        ); // Find the trailer
+        setIsLoading(false); // Hide spinner after loading
       } catch (error) {
-        console.log(error);
-        setIsLoading(false);
+        console.log(error); // Log any errors
+        setIsLoading(false); // Ensure spinner stops on error
       }
     };
 
-    fetchDetails();
-  }, [id]);
+    fetchDetails(); // Fetch details on component mount
+  }, [id]); // Re-run when `id` changes
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner />; // Show loading spinner while data is fetching
   }
 
   if (!details) {
-    return <ErrorContainer>Error fetching details.</ErrorContainer>;
+    return <ErrorContainer>Error fetching details.</ErrorContainer>; // Handle failed data fetch
   }
 
   return (
@@ -50,25 +50,25 @@ export default function Details() {
           <PosterContainer>
             <img
               src={`https://image.tmdb.org/t/p/w500${details.poster_path}`}
-              alt={details.title}
+              alt={details.title} // Poster image for the movie/show
             />
           </PosterContainer>
           <InfoContainer>
-            <h1>{details.title}</h1>
+            <h1>{details.title}</h1> {/* Title of the movie/show */}
             <p>
-              <b style={{ fontSize: "18px" }}>Overview :</b> {details.overview}
-            </p>
+              <b style={{ fontSize: "18px" }}>Overview:</b> {details.overview}
+            </p> {/* Overview/summary */}
             <p>
               <strong>Release Date:</strong> {details.release_date}
-            </p>
+            </p> {/* Release date */}
             <p>
               <strong>Rating:</strong> {details.vote_average.toFixed(1)}
-            </p>
+            </p> {/* Movie/show rating */}
             <GenresContainer>
               <strong>Genres:</strong>
               <ul>
                 {details.genres.map((genre) => (
-                  <li key={genre.id}>{genre.name}</li>
+                  <li key={genre.id}>{genre.name}</li> // Display genres
                 ))}
               </ul>
             </GenresContainer>
@@ -82,7 +82,7 @@ export default function Details() {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              title="Trailer"
+              title="Trailer" // Embed trailer video
             ></TrailerIframe>
           </TrailerSection>
         )}
@@ -95,13 +95,13 @@ export default function Details() {
                   src={
                     member.profile_path
                       ? `https://image.tmdb.org/t/p/w200${member.profile_path}`
-                      : NoImage
+                      : NoImage // Fallback image if no profile picture
                   }
                   alt={member.name}
                 />
-                <p>{member.name}</p>
+                <p>{member.name}</p> {/* Crew member name */}
                 <p>
-                  <strong>{member.job}</strong>
+                  <strong>{member.job}</strong> {/* Crew member role */}
                 </p>
               </CrewCard>
             ))}
@@ -112,7 +112,7 @@ export default function Details() {
   );
 }
 
-// Styled components
+// Styled components for layout and design
 const Container = styled.div`
   display: flex;
   flex-direction: column;
