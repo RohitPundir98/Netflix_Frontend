@@ -12,11 +12,9 @@ export default function BackgroundImage() {
 
 // Styled component for the container
 const Container = styled.div`
-  /* Set the height and width of the container to cover the viewport */
   height: 100vh;
   width: 100vw;
 
-  /* Set the image size to cover the container */
   img {
     height: 100%;
     width: 100%;
